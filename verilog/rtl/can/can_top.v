@@ -231,7 +231,7 @@ module can_top
     port_0_io,
     cs_can_i,
   `endif
-  clk_i,
+  // clk_i,
   rx_i,
   tx_o,
   bus_off_on,
@@ -286,7 +286,7 @@ parameter Tp = 1;
   reg          rd_i_q;
 `endif
 
-input        clk_i;
+// input        clk_i;
 input        rx_i;
 output       tx_o;
 output       bus_off_on;
@@ -302,7 +302,9 @@ input [`CAN_MBIST_CTRL_WIDTH - 1:0] mbist_ctrl_i;       // bist chain shift cont
 
 reg          data_out_fifo_selected;
 
-
+   wire      clk_i;
+   assign clk_i = wb_clk_i;
+   
 wire   [7:0] data_out_fifo;
 wire   [7:0] data_out_regs;
 
