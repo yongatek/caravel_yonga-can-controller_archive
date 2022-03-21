@@ -89,34 +89,75 @@ module user_proj_example #(
     assign wbs_dat_o = rdata;
     assign wdata = wbs_dat_i;
 
-    // IO
-    assign io_out = count;
-    assign io_oeb = {(`MPRJ_IO_PADS-1){rst}};
-
     // IRQ
-    assign irq = 3'b000;	// Unused
+    assign irq = 3'b000;    // Unused
+
+    // IO
+    assign io_out[`MPRJ_IO_PADS-1:5] = {(`MPRJ_IO_PADS-5){1'b0}};
+    assign io_oeb[`MPRJ_IO_PADS-1:5] = {(`MPRJ_IO_PADS-5){1'b1}};
+
+    wire rx_i;
+    wire tx_o;
+    wire bus_off_on;
+    wire irq_on;
+    wire clkout_o;
+
+    assign rx_i = io_in[0];
+    assign io_oeb[0] = 1'b0;
+
+    assign io_out[1] = tx_o;
+    assign io_oeb[1] = 1'b1;
+
+    assign io_out[2] = bus_off_on;
+    assign io_oeb[2] = 1'b1;
+
+    assign io_out[3] = irq_on;
+    assign io_oeb[3] = 1'b1;
+
+    assign io_out[4] = clkout_o;
+    assign io_oeb[4] = 1'b1;
 
     // LA
-    assign la_data_out = {{(127-BITS){1'b0}}, count};
+    assign la_data_out = {{(128){1'b0}}};
     // Assuming LA probes [63:32] are for controlling the count register  
-    assign la_write = ~la_oenb[63:32] & ~{BITS{valid}};
+    // assign la_write = ~la_oenb[63:32] & ~{BITS{valid}};
     // Assuming LA probes [65:64] are for controlling the count clk & reset  
-    assign clk = (~la_oenb[64]) ? la_data_in[64]: wb_clk_i;
-    assign rst = (~la_oenb[65]) ? la_data_in[65]: wb_rst_i;
+    // assign clk = (~la_oenb[64]) ? la_data_in[64]: wb_clk_i;
+    // assign rst = (~la_oenb[65]) ? la_data_in[65]: wb_rst_i;
 
-    counter #(
-        .BITS(BITS)
-    ) counter(
-        .clk(clk),
-        .reset(rst),
-        .ready(wbs_ack_o),
-        .valid(valid),
-        .rdata(rdata),
-        .wdata(wbs_dat_i),
-        .wstrb(wstrb),
-        .la_write(la_write),
-        .la_input(la_data_in[63:32]),
-        .count(count)
+    // counter #(
+    //     .BITS(BITS)
+    // ) counter(
+    //     .clk(clk),
+    //     .reset(rst),
+    //     .ready(wbs_ack_o),
+    //     .valid(valid),
+    //     .rdata(rdata),
+    //     .wdata(wbs_dat_i),
+    //     .wstrb(wstrb),
+    //     .la_write(la_write),
+    //     .la_input(la_data_in[63:32]),
+    //     .count(count)
+    // );
+
+    assign wbs_dat_o[31:24] = 24'h0;
+
+    can_top inst_can_top(
+        .wb_clk_i(wb_clk_i),
+        .wb_rst_i(wb_rst_i),
+        .wb_dat_i(wbs_dat_i[7:0]),
+        .wb_dat_o(wbs_dat_o[7:0]),
+        .wb_cyc_i(wbs_cyc_i),
+        .wb_stb_i(wbs_stb_i),
+        .wb_we_i(wbs_we_i),
+        .wb_adr_i(wbs_adr_i[7:0]),
+        .wb_ack_o(wbs_ack_o),
+
+        .rx_i(rx_i),
+        .tx_o(tx_o),
+        .bus_off_on(bus_off_on),
+        .irq_on(irq_on),
+        .clkout_o(clkout_o)
     );
 
 endmodule
