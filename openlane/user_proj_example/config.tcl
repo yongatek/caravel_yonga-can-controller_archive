@@ -22,7 +22,19 @@ set ::env(DESIGN_NAME) user_proj_example
 
 set ::env(VERILOG_FILES) "\
 	$::env(CARAVEL_ROOT)/verilog/rtl/defines.v \
-	$script_dir/../../verilog/rtl/user_proj_example.v"
+	$script_dir/../../verilog/rtl/user_proj_example.v \
+	$script_dir/../../verilog/rtl/can/can_btl.v \
+	$script_dir/../../verilog/rtl/can/can_registers.v \
+	$script_dir/../../verilog/rtl/can/can_register.v \
+	$script_dir/../../verilog/rtl/can/can_register_asyn.v \
+	$script_dir/../../verilog/rtl/can/can_register_syn.v \
+	$script_dir/../../verilog/rtl/can/can_register_asyn_syn.v \
+	$script_dir/../../verilog/rtl/can/can_top.v \
+	$script_dir/../../verilog/rtl/can/can_bsp.v \
+	$script_dir/../../verilog/rtl/can/can_crc.v \
+	$script_dir/../../verilog/rtl/can/can_acf.v \
+	$script_dir/../../verilog/rtl/can/can_fifo.v \
+	$script_dir/../../verilog/rtl/can/can_ibo.v"
 
 set ::env(DESIGN_IS_CORE) 0
 
@@ -31,12 +43,12 @@ set ::env(CLOCK_NET) "counter.clk"
 set ::env(CLOCK_PERIOD) "10"
 
 set ::env(FP_SIZING) absolute
-set ::env(DIE_AREA) "0 0 900 600"
+set ::env(DIE_AREA) "0 0 2000 2000"
 
 set ::env(FP_PIN_ORDER_CFG) $script_dir/pin_order.cfg
 
-set ::env(PL_BASIC_PLACEMENT) 1
-set ::env(PL_TARGET_DENSITY) 0.05
+#set ::env(PL_BASIC_PLACEMENT) 1
+#set ::env(PL_TARGET_DENSITY) 0.17
 
 # Maximum layer used for routing is metal 4.
 # This is because this macro will be inserted in a top level (user_project_wrapper) 
