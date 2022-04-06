@@ -81,43 +81,43 @@ module user_project_wrapper #(
 /*--------------------------------------*/
 /* User project is instantiated  here   */
 /*--------------------------------------*/
+    wire rx_i;
+    wire tx_o;
+    wire bus_off_on;
+    wire irq_on;
+    wire clkout_o;
 
-user_proj_example mprj (
-`ifdef USE_POWER_PINS
-	.vccd1(vccd1),	// User area 1 1.8V power
-	.vssd1(vssd1),	// User area 1 digital ground
-`endif
+    assign rx_i = io_in[8];
 
-    .wb_clk_i(wb_clk_i),
-    .wb_rst_i(wb_rst_i),
+    assign io_out[9] = tx_o;
 
-    // MGMT SoC Wishbone Slave
+    assign io_out[10] = bus_off_on;
 
-    .wbs_cyc_i(wbs_cyc_i),
-    .wbs_stb_i(wbs_stb_i),
-    .wbs_we_i(wbs_we_i),
-    .wbs_sel_i(wbs_sel_i),
-    .wbs_adr_i(wbs_adr_i),
-    .wbs_dat_i(wbs_dat_i),
-    .wbs_ack_o(wbs_ack_o),
-    .wbs_dat_o(wbs_dat_o),
+    assign io_out[11] = irq_on;
 
-    // Logic Analyzer
+    assign io_out[12] = clkout_o;
 
-    .la_data_in(la_data_in),
-    .la_data_out(la_data_out),
-    .la_oenb (la_oenb),
+    
+    can_top can_top_inst(
+        .vccd1(vccd1),
+	.vssd1(vssd1),
+	.wb_clk_i(wb_clk_i),
+        .wb_rst_i(wb_rst_i),
+        .wb_dat_i(wbs_dat_i[7:0]),
+        .wb_dat_o(wbs_dat_o[7:0]),
+        .wb_cyc_i(wbs_cyc_i),
+        .wb_stb_i(wbs_stb_i),
+        .wb_we_i(wbs_we_i),
+        .wb_adr_i(wbs_adr_i[7:0]),
+        .wb_ack_o(wbs_ack_o),
 
-    // IO Pads
-
-    .io_in (io_in),
-    .io_out(io_out),
-    .io_oeb(io_oeb),
-
-    // IRQ
-    .irq(user_irq)
-);
-
+        .rx_i(rx_i),
+        .tx_o(tx_o),
+        .bus_off_on(bus_off_on),
+        .irq_on(irq_on),
+        .clkout_o(clkout_o)
+    );
+    
 endmodule	// user_project_wrapper
 
 `default_nettype wire
