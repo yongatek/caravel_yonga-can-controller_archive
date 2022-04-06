@@ -213,7 +213,11 @@
 
 module can_top
 ( 
-  `ifdef CAN_WISHBONE_IF
+   `ifdef USE_POWER_PINS
+    vccd1,
+    vssd1,
+   `endif
+   `ifdef CAN_WISHBONE_IF
     wb_clk_i,
     wb_rst_i,
     wb_dat_i,
@@ -250,7 +254,10 @@ module can_top
 
 parameter Tp = 1;
 
-
+`ifdef USE_POWER_PINS
+  inout vccd1;
+  inout vssd1;
+`endif
 `ifdef CAN_WISHBONE_IF
   input        wb_clk_i;
   input        wb_rst_i;
